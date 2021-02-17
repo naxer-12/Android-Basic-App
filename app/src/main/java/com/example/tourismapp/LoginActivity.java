@@ -51,6 +51,7 @@ public class LoginActivity extends AppCompatActivity {
                 passWord = passWordField.getEditText().getText().toString();
                 if (validateLoginParameters()) {
                     try {
+                        boolean matchUser = false;
                         JSONObject userData = new JSONObject(sessionManager.readUserData());
                         JSONArray userInfoArray = userData.getJSONArray("userdata");
                         String savedUserName, savedpassword;
@@ -62,15 +63,13 @@ public class LoginActivity extends AppCompatActivity {
                                 userInfoArray.getJSONObject(i).put("rememberMe", mRememberCheckBox.isChecked());
                                 sessionManager.setCurrentUserEmail(userInfoArray.getJSONObject(i).getString("username"));
                                 sessionManager.setRememberMeStatus(mRememberCheckBox.isChecked());
-
+                                matchUser = true;
                                 break;
-                            } else if (!savedUserName.equals(userName) || !savedpassword.equals(passWord)) {
-                                Toast.makeText(LoginActivity.this, "Please provide correct username and password", Toast.LENGTH_SHORT).show();
-
-                            } else {
-                                Toast.makeText(LoginActivity.this, "User doesnt exist", Toast.LENGTH_SHORT).show();
-
                             }
+
+                        }
+                        if (!matchUser) {
+                            Toast.makeText(LoginActivity.this, "Please provide correct username and password", Toast.LENGTH_SHORT).show();
                         }
                         userData.put("userdata", userInfoArray);
                         sessionManager.writeUserData(userData.toString());

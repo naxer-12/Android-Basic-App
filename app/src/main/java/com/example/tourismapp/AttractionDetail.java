@@ -62,6 +62,7 @@ public class AttractionDetail extends AppCompatActivity {
         attractionDescription.setText(attractions.get(position).description);
 
         ImageView simpleImageView = findViewById(R.id.attractionImage);
+        ImageView simpleImageView2 = findViewById(R.id.attractionImage2);
 
         ratingbar = (RatingBar) findViewById(R.id.ratingBar);
         JSONObject userData = null;
@@ -102,10 +103,16 @@ public class AttractionDetail extends AppCompatActivity {
         try {
             // get input stream
             InputStream ims = getAssets().open(attractions.get(position).getImages()[0]);
+            InputStream ims2 = getAssets().open(attractions.get(position).getImages()[1]);
             // load image as Drawable
             Drawable d = Drawable.createFromStream(ims, null);
+            Drawable d2 = Drawable.createFromStream(ims2, null);
+
             // set image to ImageView
             simpleImageView.setImageDrawable(d);
+            simpleImageView2.setImageDrawable(d2);
+            ims.close();
+            ims2.close();
 //            ims.close();
         } catch (IOException ex) {
         }
@@ -115,7 +122,6 @@ public class AttractionDetail extends AppCompatActivity {
             public void onClick(View v) {
                 //do save the rating for the user in json here
                 String rating = String.valueOf(ratingbar.getRating());
-                Toast.makeText(getApplicationContext(), rating, Toast.LENGTH_LONG).show();
                 JSONObject userData = null;
                 Log.d(TAG, "Inside on click");
 

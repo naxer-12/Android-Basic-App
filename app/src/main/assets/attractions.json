@@ -8,7 +8,7 @@
    "price": 50,
    "website": "https://www.towerofpisa.org/",
    "phone": "+39 050 835011",
-   "images": ["leaning_tower_of_pisa.jpg"]
+   "images": ["leaning_tower_of_pisa.jpg","leaning_tower_of_pisa_2.jpg"]
   },
   {
    "id": 2,
@@ -18,7 +18,7 @@
    "price": 200,
    "website": "https://www.tajmahal.gov.in/",
    "phone": "+91 562 2421204",
-   "images": ["taj_mahal.jpg"]
+   "images": ["taj_mahal.jpg","taj_mahal_2.jpg"]
   },
   {
    "id": 3,
@@ -28,7 +28,7 @@
    "price": 150,
    "website": "https://www.nps.gov/",
    "phone": "(212) 363-3200",
-   "images": ["statue_of_liberty.jpg"]
+   "images": ["statue_of_liberty.jpg","statue_of_liberty_2.jpg"]
   }
  ]
 }
