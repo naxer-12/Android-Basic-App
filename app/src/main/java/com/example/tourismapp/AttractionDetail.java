@@ -1,7 +1,9 @@
 package com.example.tourismapp;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.nfc.Tag;
@@ -104,6 +106,7 @@ public class AttractionDetail extends AppCompatActivity {
             Drawable d = Drawable.createFromStream(ims, null);
             // set image to ImageView
             simpleImageView.setImageDrawable(d);
+//            ims.close();
         } catch (IOException ex) {
         }
 
@@ -136,7 +139,7 @@ public class AttractionDetail extends AppCompatActivity {
                                         String siteName = ratingsArray.getJSONObject(j).getString("site_name");
                                         if (currentSiteName.equals(siteName)) {
                                             matchRating = true;
-                                            ratingsArray.getJSONObject(i).put("rating", rating);
+                                            ratingsArray.getJSONObject(j).put("rating", rating);
                                             break;
 
                                         }
@@ -175,51 +178,69 @@ public class AttractionDetail extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-                sessionManager = new SessionManager(getApplicationContext());
-                JSONObject userData = null;
-                Log.d(TAG, "Inside on click");
+                AlertDialog.Builder builder = new AlertDialog.Builder(AttractionDetail.this);
+                builder.setTitle("Logout").
+                        setMessage("You sure, that you want to logout?");
+                builder.setPositiveButton("Yes",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
 
-                try {
-                    userData = new JSONObject(sessionManager.readUserData());
-                    JSONArray userInfoArray = userData.getJSONArray("userdata");
-                    String currentLoggedInUserName = sessionManager.getCurrentUserEmail();
-                    for (int i = 0; i < userInfoArray.length(); i++) {
-                        String name = userInfoArray.getJSONObject(i).getString("username");
-                        if (currentLoggedInUserName.equals(name)) {
-                            boolean loggedInStatus = userInfoArray.getJSONObject(i).getBoolean("isLoggedIn");
-                            if (loggedInStatus) {
-                                userInfoArray.getJSONObject(i).put("isLoggedIn", false);
-                                userInfoArray.getJSONObject(i).put("rememberMe", false);
-                                Intent intent = new Intent(AttractionDetail.this, LoginActivity.class);
-                                intent.putExtra("finish", true);
-                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // To clean up all activities
-                                startActivity(intent);
-                                finish();
+                                sessionManager = new SessionManager(getApplicationContext());
+                                JSONObject userData = null;
+                                Log.d(TAG, "Inside on click");
+
+                                try {
+                                    userData = new JSONObject(sessionManager.readUserData());
+                                    JSONArray userInfoArray = userData.getJSONArray("userdata");
+                                    String currentLoggedInUserName = sessionManager.getCurrentUserEmail();
+                                    for (int i = 0; i < userInfoArray.length(); i++) {
+                                        String name = userInfoArray.getJSONObject(i).getString("username");
+                                        if (currentLoggedInUserName.equals(name)) {
+                                            boolean loggedInStatus = userInfoArray.getJSONObject(i).getBoolean("isLoggedIn");
+                                            if (loggedInStatus) {
+                                                userInfoArray.getJSONObject(i).put("isLoggedIn", false);
+                                                userInfoArray.getJSONObject(i).put("rememberMe", false);
+                                                Intent intent = new Intent(AttractionDetail.this, LoginActivity.class);
+                                                intent.putExtra("finish", true);
+                                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // To clean up all activities
+                                                startActivity(intent);
+                                                finish();
+                                            }
+
+                                        }
+
+
+                                    }
+                                    userData.put("userdata", userInfoArray);
+                                    sessionManager.writeUserData(userData.toString());
+                                    Log.d(TAG, userData.toString());
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+
                             }
+                        });
+                builder.setNegativeButton("No",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
+                AlertDialog alert11 = builder.create();
+                alert11.show();
 
-                        }
-
-
-                    }
-                    userData.put("userdata", userInfoArray);
-                    sessionManager.writeUserData(userData.toString());
-                    Log.d(TAG, userData.toString());
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
             }
+
 
         });
 
-        attractionContact.setOnClickListener(new View.OnClickListener()
-
-        {
+        attractionContact.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-        String phone = attractionContact.getText().toString();
-        Intent phoneIntent = new Intent(Intent.ACTION_DIAL, Uri.fromParts(
-                "tel", phone, null));
-        startActivity(phoneIntent);
+                String phone = attractionContact.getText().toString();
+                Intent phoneIntent = new Intent(Intent.ACTION_DIAL, Uri.fromParts(
+                        "tel", phone, null));
+                startActivity(phoneIntent);
             }
 
         });
@@ -229,7 +250,7 @@ public class AttractionDetail extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                Intent Getintent = new Intent(Intent.ACTION_VIEW,Uri.parse(attractionWebsite.getText().toString()));
+                Intent Getintent = new Intent(Intent.ACTION_VIEW, Uri.parse(attractionWebsite.getText().toString()));
                 startActivity(Getintent);
 
             }

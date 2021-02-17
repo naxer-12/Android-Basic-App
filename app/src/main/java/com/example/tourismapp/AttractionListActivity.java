@@ -42,40 +42,57 @@ public class AttractionListActivity extends AppCompatActivity {
 
         logout.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                //do logout of the logged in user here before procceding
-                JSONObject userData = null;
-                Log.d(TAG, "Inside on click");
+                AlertDialog.Builder builder = new AlertDialog.Builder(AttractionListActivity.this);
+                builder.setTitle("Logout").
+                        setMessage("You sure, that you want to logout?");
+                builder.setPositiveButton("Yes",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
 
-                try {
-                    userData = new JSONObject(sessionManager.readUserData());
-                    JSONArray userInfoArray = userData.getJSONArray("userdata");
-                    String currentLoggedInUserName = sessionManager.getCurrentUserEmail();
-                    for (int i = 0; i < userInfoArray.length(); i++) {
-                        String name = userInfoArray.getJSONObject(i).getString("username");
-                        if (currentLoggedInUserName.equals(name)) {
-                            boolean loggedInStatus = userInfoArray.getJSONObject(i).getBoolean("isLoggedIn");
-                            if (loggedInStatus) {
-                                userInfoArray.getJSONObject(i).put("isLoggedIn", false);
-                                userInfoArray.getJSONObject(i).put("rememberMe", false);
-                                Intent intent = new Intent(AttractionListActivity.this, LoginActivity.class);
-                                intent.putExtra("finish", true);
-                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // To clean up all activities
-                                startActivity(intent);
-                                finish();
+                                sessionManager = new SessionManager(getApplicationContext());
+                                JSONObject userData = null;
+                                Log.d(TAG, "Inside on click");
+
+                                try {
+                                    userData = new JSONObject(sessionManager.readUserData());
+                                    JSONArray userInfoArray = userData.getJSONArray("userdata");
+                                    String currentLoggedInUserName = sessionManager.getCurrentUserEmail();
+                                    for (int i = 0; i < userInfoArray.length(); i++) {
+                                        String name = userInfoArray.getJSONObject(i).getString("username");
+                                        if (currentLoggedInUserName.equals(name)) {
+                                            boolean loggedInStatus = userInfoArray.getJSONObject(i).getBoolean("isLoggedIn");
+                                            if (loggedInStatus) {
+                                                userInfoArray.getJSONObject(i).put("isLoggedIn", false);
+                                                userInfoArray.getJSONObject(i).put("rememberMe", false);
+                                                Intent intent = new Intent(AttractionListActivity.this, LoginActivity.class);
+                                                intent.putExtra("finish", true);
+                                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // To clean up all activities
+                                                startActivity(intent);
+                                                finish();
+                                            }
+
+                                        }
+
+
+                                    }
+                                    userData.put("userdata", userInfoArray);
+                                    sessionManager.writeUserData(userData.toString());
+                                    Log.d(TAG, userData.toString());
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+
                             }
+                        });
+                builder.setNegativeButton("No",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
+                AlertDialog alert11 = builder.create();
+                alert11.show();
 
-                        }
-
-
-                    }
-                    userData.put("userdata", userInfoArray);
-                    sessionManager.writeUserData(userData.toString());
-                    Log.d(TAG, userData.toString());
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-                finish();
             }
 
         });
