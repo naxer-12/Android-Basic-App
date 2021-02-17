@@ -49,9 +49,11 @@ public class AttractionDetail extends AppCompatActivity {
         Log.d(TAG, attractions.get(position).name);
 
         TextView attractionName = findViewById(R.id.title);
+        TextView attractionAddress = findViewById(R.id.address);
         TextView attractionContact = findViewById(R.id.phone);
         TextView attractionWebsite = findViewById(R.id.website);
         TextView attractionDescription = findViewById(R.id.description);
+        TextView attractionPricing = findViewById(R.id.pricing);
         Button goback = findViewById(R.id.button1);
         Button logout = findViewById(R.id.button2);
 
@@ -60,6 +62,8 @@ public class AttractionDetail extends AppCompatActivity {
         attractionContact.setText(attractions.get(position).phone);
         attractionWebsite.setText(attractions.get(position).website);
         attractionDescription.setText(attractions.get(position).description);
+        attractionAddress.setText(attractions.get(position).address);
+        attractionPricing.setText(String.valueOf(attractions.get(position).price));
 
         ImageView simpleImageView = findViewById(R.id.attractionImage);
         ImageView simpleImageView2 = findViewById(R.id.attractionImage2);
