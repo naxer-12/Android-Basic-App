@@ -1,8 +1,13 @@
 package com.example.tourismapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -23,10 +28,19 @@ public class AttractionListActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_attraction_list);
+        Log.d(TAG," activity started");
         String fileContents = loadDataFromFile("attractions.json");
         JSONObject attractions = convertToJSON(fileContents);
         parseJSONData(attractions);
+        Button logout =  findViewById(R.id.button1);
+        logout.setOnClickListener(new View.OnClickListener()
+        {
+            public void onClick(View v) {
+                //do logout of the logged in user here before procceding
+                finish();
+            }
 
+        });
     }
     public String loadDataFromFile(String FILENAME) {
         String jsonString;
@@ -68,15 +82,42 @@ public class AttractionListActivity extends AppCompatActivity {
                 int price = (int) attractionObj.getInt("price");
                 String website = attractionObj.getString("website");
                 String phone = attractionObj.getString("phone");
+                JSONArray  images= (JSONArray) attractionObj.get("images");
+                String imgs[] = new String[4];
+                for(int count = 0 ; count < images.length(); count++){
+                    imgs[count] = images.get(count).toString();
+                }
+                Attractions newAdd =  new Attractions(attractionName, address, description, price, website, phone,imgs);
+                attractions.add(newAdd);
+                // reference to your listview
+                ListView lv = (ListView)findViewById(R.id.lvAttractionsListView);
 
-                attractions.add(new Attractions(attractionName, address, description, price, website, phone));
-                 // reference to your listview
-                ListView lv = findViewById(R.id.lvAttractionsListView);
+                lv.setOnItemClickListener(
+                        new AdapterView.OnItemClickListener()
+                        {
+                            @Override
+                            public void onItemClick(AdapterView<?> arg0, View view,
+                                                    int position, long id) {
+
+                                //Take action here.
+                                Log.d(TAG,"CLICKED" );
+                                Intent intent = new Intent(AttractionListActivity.this, AttractionDetail.class);
+                                intent.putExtra("attractions",attractions);
+                                intent.putExtra("position",position);
+                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                startActivity(intent);
+                            }
+                        }
+                );
 
                 // create an adapter
                 AttractionsListAdapter adapter = new AttractionsListAdapter(this,attractions);
                 // associate this adapter with the listview
-                lv.setAdapter(adapter);
+
+                if(lv!=null){
+
+                    lv.setAdapter(adapter);
+                }
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -84,5 +125,10 @@ public class AttractionListActivity extends AppCompatActivity {
 
 
     }
+    protected void onListItemClick(ListView l, View v, final int position, long id) {
+
+        //Go to another activity etc
+    }
+
 
 }

@@ -1,21 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    android:layout_centerHorizontal="true">
 
     <ListView
         android:id="@+id/lvAttractionsListView"
         android:layout_width="match_parent"
-        android:layout_height="537dp"
-        tools:listitem="@layout/attractions_list_layout"/>
+        android:layout_height="wrap_content" />
 
     <Button
-        android:id="@+id/btnBack"
-        android:layout_width="wrap_content"
+        android:layout_width="150dp"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="Back"/>
+        android:layout_centerHorizontal="true"
+        android:text="Logout"
+        android:id="@+id/button1"
+        android:layout_below="@id/lvAttractionsListView"
+
+        android:textColor="@color/black"
+        android:backgroundTint="@color/white"
+        android:onClick="logout"/>
 
 </LinearLayout>

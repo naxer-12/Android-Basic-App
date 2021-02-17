@@ -75,6 +75,8 @@ public class LoginActivity extends AppCompatActivity {
                         userData.put("userdata", userInfoArray);
                         sessionManager.writeUserData(userData.toString());
                         Log.d(TAG, userData.toString());
+                        Log.d(TAG,"Successful login");
+                        checkUserLoggedIn();
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -140,11 +142,12 @@ public class LoginActivity extends AppCompatActivity {
         try {
             userData = new JSONObject(sessionManager.readUserData());
             JSONArray userInfoArray = userData.getJSONArray("userdata");
-            for (int i = 0; i < userInfoArray.length(); i++) {
+            for (int i = 0; i < userInfoArray.length() && !isLoggedin; i++) {
                 isLoggedin = (boolean) userInfoArray.getJSONObject(i).get("isLoggedIn");
             }
             if (isLoggedin) {
-                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                Log.d(TAG,"Logged in already");
+                Intent intent = new Intent(LoginActivity.this, AttractionListActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
             }

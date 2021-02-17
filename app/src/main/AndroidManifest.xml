@@ -10,6 +10,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.TourismApp">
         <activity android:name=".MainActivity"></activity>
+<!--        <activity android:name=".LoginActivity"></activity>-->
+        <activity android:name=".AttractionDetail"></activity>
+        <activity android:name=".AttractionListActivity"></activity>
         <activity android:name=".LoginActivity"
             >
             <intent-filter>

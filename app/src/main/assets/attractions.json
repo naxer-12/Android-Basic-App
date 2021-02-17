@@ -1,34 +1,34 @@
 {
-"attractions": [
- {
-  "id": 1,
-  "name": "Leaning tower of pisa",
-  "address": "Piazza del Duomo, 56126 Pisa PI, Italy",
-  "description": "Largest non-vertical tower",
-  "price": 50,
-  "website": "https://www.towerofpisa.org/",
-  "phone": "+39 050 835011",
-  "images": []
- },
- {
-  "id": 2,
-  "name": "Taj Mahal",
-  "address": "New Delhi, India",
-  "description": "White monument",
-  "price": 200,
-  "website": "https://www.tajmahal.gov.in/",
-  "phone": "+91 562 2421204",
-  "images": []
- },
- {
-  "id": 3,
-  "name": "Statue of Liberty",
-  "address": "New York, USA",
-  "description": "Liberty Enlightening the World",
-  "price": 150,
-  "website": "https://www.nps.gov/",
-  "phone": "(212) 363-3200",
-  "images": []
- }
+ "attractions": [
+  {
+   "id": 1,
+   "name": "Leaning tower of pisa",
+   "address": "Piazza del Duomo, 56126 Pisa PI, Italy",
+   "description": "Largest non-vertical tower",
+   "price": 50,
+   "website": "https://www.towerofpisa.org/",
+   "phone": "+39 050 835011",
+   "images": ["leaning_tower_of_pisa.jpg"]
+  },
+  {
+   "id": 2,
+   "name": "Taj Mahal",
+   "address": "New Delhi, India",
+   "description": "White monument",
+   "price": 200,
+   "website": "https://www.tajmahal.gov.in/",
+   "phone": "+91 562 2421204",
+   "images": ["taj_mahal.jpg"]
+  },
+  {
+   "id": 3,
+   "name": "Statue of Liberty",
+   "address": "New York, USA",
+   "description": "Liberty Enlightening the World",
+   "price": 150,
+   "website": "https://www.nps.gov/",
+   "phone": "(212) 363-3200",
+   "images": ["statue_of_liberty.jpg"]
+  }
  ]
 }

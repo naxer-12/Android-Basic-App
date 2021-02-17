@@ -1,21 +1,24 @@
 package com.example.tourismapp;
 
-public class Attractions {
-     String name;
-     String address;
-     String description;
-     int price;
-     String website;
-     String phone;
+import java.io.Serializable;
 
+public class Attractions implements Serializable {
+    String name;
+    String address;
+    String description;
+    int price;
+    String website;
+    String phone;
+    String images[];
 
-    public Attractions(String name, String address, String description, int price, String website, String phone) {
+    public Attractions(String name, String address, String description, int price, String website, String phone,String[] images) {
         this.name = name;
         this.address = address;
         this.description = description;
         this.price = price;
         this.website = website;
         this.phone = phone;
+        this.images = images;
     }
 
     public String getName() {
@@ -60,6 +63,9 @@ public class Attractions {
 
     public String getPhone() {
         return phone;
+    }
+    public String[] getImages() {
+        return images;
     }
 
     public void setPhone(String phone) {
