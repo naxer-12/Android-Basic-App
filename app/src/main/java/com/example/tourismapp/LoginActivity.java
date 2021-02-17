@@ -75,7 +75,7 @@ public class LoginActivity extends AppCompatActivity {
                         userData.put("userdata", userInfoArray);
                         sessionManager.writeUserData(userData.toString());
                         Log.d(TAG, userData.toString());
-                        Log.d(TAG,"Successful login");
+                        Log.d(TAG, "Successful login");
                         checkUserLoggedIn();
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -142,15 +142,16 @@ public class LoginActivity extends AppCompatActivity {
         try {
             userData = new JSONObject(sessionManager.readUserData());
             JSONArray userInfoArray = userData.getJSONArray("userdata");
-            for (int i = 0; i < userInfoArray.length() && !isLoggedin; i++) {
+            for (int i = 0; i < userInfoArray.length(); i++) {
                 isLoggedin = (boolean) userInfoArray.getJSONObject(i).get("isLoggedIn");
+                if (isLoggedin) {
+                    Log.d(TAG, "Logged in already");
+                    Intent intent = new Intent(LoginActivity.this, AttractionListActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intent);
+                }
             }
-            if (isLoggedin) {
-                Log.d(TAG,"Logged in already");
-                Intent intent = new Intent(LoginActivity.this, AttractionListActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
-            }
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -160,11 +161,13 @@ public class LoginActivity extends AppCompatActivity {
 
     private void initializeUserDb() {
         JSONArray userInfo = new JSONArray();
+        JSONArray ratingArray = new JSONArray();
         JSONObject user = new JSONObject();
         try {
             user.put("username", "thanos@gmail.com");
             user.put("password", "1234");
             user.put("isLoggedIn", false);
+            user.put("ratings", ratingArray);
             userInfo.put(user);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -174,6 +177,7 @@ public class LoginActivity extends AppCompatActivity {
             user.put("username", "wonderwoman@yahoo.com");
             user.put("password", "abc!!");
             user.put("isLoggedIn", false);
+            user.put("ratings", ratingArray);
             userInfo.put(user);
         } catch (JSONException e) {
             e.printStackTrace();

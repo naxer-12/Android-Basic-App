@@ -49,5 +49,10 @@ public class SessionManager {
         editor.commit();
     }
 
+    public void clearData() {
+        editor.clear();
+        editor.commit();
+    }
+
 
 }

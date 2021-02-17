@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.nfc.Tag;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -14,6 +15,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.tourismapp.R;
+import com.example.tourismapp.database.SessionManager;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,26 +30,27 @@ public class AttractionDetail extends AppCompatActivity {
     ArrayList<Attractions> attractions;
     RatingBar ratingbar;
     int position;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.attraction_details);
 
-        if(getIntent().getExtras() != null) {
-            attractions = (ArrayList<Attractions> ) getIntent().getSerializableExtra("attractions");
-            position =   getIntent().getIntExtra("position",0);
+        if (getIntent().getExtras() != null) {
+            attractions = (ArrayList<Attractions>) getIntent().getSerializableExtra("attractions");
+            position = getIntent().getIntExtra("position", 0);
         }
+        SessionManager sessionManager = new SessionManager(getApplicationContext());
 
-        Log.d(TAG,"STARTED: "+position);
-        Log.d(TAG,attractions.get(position).name);
+        Log.d(TAG, "STARTED: " + position);
+        Log.d(TAG, attractions.get(position).name);
 
-        TextView attractionName =  findViewById(R.id.title);
-        TextView attractionContact =  findViewById(R.id.phone);
-        TextView attractionWebsite =  findViewById(R.id.website);
-        TextView attractionDescription =  findViewById(R.id.description);
-        Button goback =  findViewById(R.id.button1);
-        Button logout =  findViewById(R.id.button2);
-
+        TextView attractionName = findViewById(R.id.title);
+        TextView attractionContact = findViewById(R.id.phone);
+        TextView attractionWebsite = findViewById(R.id.website);
+        TextView attractionDescription = findViewById(R.id.description);
+        Button goback = findViewById(R.id.button1);
+        Button logout = findViewById(R.id.button2);
 
 
         attractionName.setText(attractions.get(position).name);
@@ -53,8 +60,42 @@ public class AttractionDetail extends AppCompatActivity {
 
         ImageView simpleImageView = findViewById(R.id.attractionImage);
 
-        ratingbar=(RatingBar)findViewById(R.id.ratingBar);
+        ratingbar = (RatingBar) findViewById(R.id.ratingBar);
+        JSONObject userData = null;
+        Log.d(TAG, "Inside on click");
 
+        try {
+
+            userData = new JSONObject(sessionManager.readUserData());
+            JSONArray userInfoArray = userData.getJSONArray("userdata");
+            String currentLoggedInUserName = sessionManager.getCurrentUserEmail();
+            for (int i = 0; i < userInfoArray.length(); i++) {
+                String name = userInfoArray.getJSONObject(i).getString("username");
+                if (currentLoggedInUserName.equals(name)) {
+                    boolean loggedInStatus = userInfoArray.getJSONObject(i).getBoolean("isLoggedIn");
+                    if (loggedInStatus) {
+                        JSONObject user = userInfoArray.getJSONObject(i);
+                        JSONArray ratingsArray = user.getJSONArray("ratings");
+                        if (ratingsArray.length() != 0) {
+
+                            String currentSiteName = attractions.get(position).name;
+                            for (int j = 0; j < ratingsArray.length(); j++) {
+                                String siteName = ratingsArray.getJSONObject(j).getString("site_name");
+                                if (currentSiteName.equals(siteName)) {
+                                    ratingbar.setRating(Float.parseFloat(ratingsArray.getJSONObject(j).getString("rating")));
+                                    break;
+
+                                }
+
+                            }
+
+                        }
+                    }
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         try {
             // get input stream
             InputStream ims = getAssets().open(attractions.get(position).getImages()[0]);
@@ -62,33 +103,109 @@ public class AttractionDetail extends AppCompatActivity {
             Drawable d = Drawable.createFromStream(ims, null);
             // set image to ImageView
             simpleImageView.setImageDrawable(d);
+        } catch (IOException ex) {
         }
-        catch(IOException ex) {
-        }
-        goback.setOnClickListener(new View.OnClickListener()
 
-        {
+        goback.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //do save the rating for the user in json here
-                String rating=String.valueOf(ratingbar.getRating());
+                String rating = String.valueOf(ratingbar.getRating());
                 Toast.makeText(getApplicationContext(), rating, Toast.LENGTH_LONG).show();
+                JSONObject userData = null;
+                Log.d(TAG, "Inside on click");
+
+                try {
+
+                    userData = new JSONObject(sessionManager.readUserData());
+                    JSONArray userInfoArray = userData.getJSONArray("userdata");
+                    String currentLoggedInUserName = sessionManager.getCurrentUserEmail();
+                    for (int i = 0; i < userInfoArray.length(); i++) {
+                        String name = userInfoArray.getJSONObject(i).getString("username");
+                        if (currentLoggedInUserName.equals(name)) {
+                            boolean loggedInStatus = userInfoArray.getJSONObject(i).getBoolean("isLoggedIn");
+                            if (loggedInStatus) {
+                                boolean matchRating = false;
+                                JSONObject user = userInfoArray.getJSONObject(i);
+                                JSONObject ratingObject = new JSONObject();
+                                JSONArray ratingsArray = user.getJSONArray("ratings");
+                                if (ratingsArray.length() != 0) {
+                                    String currentSiteName = attractions.get(position).name;
+                                    for (int j = 0; j < ratingsArray.length(); j++) {
+                                        String siteName = ratingsArray.getJSONObject(j).getString("site_name");
+                                        if (currentSiteName.equals(siteName)) {
+                                            matchRating = true;
+                                            ratingsArray.getJSONObject(i).put("rating", rating);
+                                            break;
+
+                                        }
+
+                                    }
+                                    if (!matchRating) {
+                                        ratingObject.put("site_name", attractions.get(position).name);
+                                        ratingObject.put("rating", rating);
+                                    }
+                                } else {
+                                    ratingObject.put("site_name", attractions.get(position).name);
+                                    ratingObject.put("rating", rating);
+                                }
+                                if (ratingObject.length() != 0) {
+                                    ratingsArray.put(ratingObject);
+
+                                }
+                                user.put("ratings", ratingsArray);
+                                break;
+                            }
+                        }
+                    }
+                    sessionManager.writeUserData(userData.toString());
+                    Log.d(TAG, sessionManager.readUserData());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
                 finish();
 
             }
 
         });
 
-        logout.setOnClickListener(new View.OnClickListener()
+        logout.setOnClickListener(new View.OnClickListener() {
+            SessionManager sessionManager;
 
-        {
             @Override
             public void onClick(View v) {
-                //do save the rating for the user in json here
-                //do logout of the logged in user here before procceding
-                String rating=String.valueOf(ratingbar.getRating());
-                Toast.makeText(getApplicationContext(), rating, Toast.LENGTH_LONG).show();
-                finish();
+                sessionManager = new SessionManager(getApplicationContext());
+                JSONObject userData = null;
+                Log.d(TAG, "Inside on click");
+
+                try {
+                    userData = new JSONObject(sessionManager.readUserData());
+                    JSONArray userInfoArray = userData.getJSONArray("userdata");
+                    String currentLoggedInUserName = sessionManager.getCurrentUserEmail();
+                    for (int i = 0; i < userInfoArray.length(); i++) {
+                        String name = userInfoArray.getJSONObject(i).getString("username");
+                        if (currentLoggedInUserName.equals(name)) {
+                            boolean loggedInStatus = userInfoArray.getJSONObject(i).getBoolean("isLoggedIn");
+                            if (loggedInStatus) {
+                                userInfoArray.getJSONObject(i).put("isLoggedIn", false);
+                                userInfoArray.getJSONObject(i).put("rememberMe", false);
+                                Intent intent = new Intent(AttractionDetail.this, LoginActivity.class);
+                                intent.putExtra("finish", true);
+                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // To clean up all activities
+                                startActivity(intent);
+                                finish();
+                            }
+
+                        }
+
+
+                    }
+                    userData.put("userdata", userInfoArray);
+                    sessionManager.writeUserData(userData.toString());
+                    Log.d(TAG, userData.toString());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
 
         });
