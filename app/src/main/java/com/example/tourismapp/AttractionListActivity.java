@@ -1,5 +1,6 @@
 package com.example.tourismapp;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -9,6 +10,7 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import org.json.JSONArray;
@@ -33,13 +35,32 @@ public class AttractionListActivity extends AppCompatActivity {
         JSONObject attractions = convertToJSON(fileContents);
         parseJSONData(attractions);
         Button logout =  findViewById(R.id.button1);
-        logout.setOnClickListener(new View.OnClickListener()
-        {
+        logout.setOnClickListener(new View.OnClickListener() {
+            @Override
             public void onClick(View v) {
-                //do logout of the logged in user here before procceding
-                finish();
-            }
 
+                AlertDialog.Builder builder = new AlertDialog.Builder(AttractionListActivity.this);
+                builder.setTitle("Confirmation PopUp!").
+                        setMessage("You sure, that you want to logout?");
+                builder.setPositiveButton("Yes",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                Intent i = new Intent(getApplicationContext(),
+                                        LoginActivity.class);
+                                startActivity(i);
+                                finish();
+                            }
+                        });
+                builder.setNegativeButton("No",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
+                AlertDialog alert11 = builder.create();
+                alert11.show();
+
+            }
         });
     }
     public String loadDataFromFile(String FILENAME) {
