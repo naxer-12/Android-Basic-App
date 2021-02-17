@@ -92,7 +92,6 @@ public class AttractionListActivity extends AppCompatActivity {
                         });
                 AlertDialog alert11 = builder.create();
                 alert11.show();
-
             }
 
         });
