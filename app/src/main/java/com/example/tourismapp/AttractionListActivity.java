@@ -38,7 +38,6 @@ public class AttractionListActivity extends AppCompatActivity {
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 AlertDialog.Builder builder = new AlertDialog.Builder(AttractionListActivity.this);
                 builder.setTitle("Confirmation PopUp!").
                         setMessage("You sure, that you want to logout?");
@@ -46,9 +45,8 @@ public class AttractionListActivity extends AppCompatActivity {
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 Intent i = new Intent(getApplicationContext(),
-                                        LoginActivity.class);
+                                        MainActivity.class);
                                 startActivity(i);
-                                finish();
                             }
                         });
                 builder.setNegativeButton("No",
@@ -59,7 +57,6 @@ public class AttractionListActivity extends AppCompatActivity {
                         });
                 AlertDialog alert11 = builder.create();
                 alert11.show();
-
             }
         });
     }

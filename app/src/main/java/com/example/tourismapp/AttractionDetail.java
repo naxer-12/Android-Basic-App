@@ -1,7 +1,9 @@
 package com.example.tourismapp;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -80,18 +82,29 @@ public class AttractionDetail extends AppCompatActivity {
 
         });
 
-        logout.setOnClickListener(new View.OnClickListener()
-
-        {
+        logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //do save the rating for the user in json here
-                //do logout of the logged in user here before procceding
-                String rating=String.valueOf(ratingbar.getRating());
-                Toast.makeText(getApplicationContext(), rating, Toast.LENGTH_LONG).show();
-                finish();
+                AlertDialog.Builder builder = new AlertDialog.Builder(AttractionDetail.this);
+                builder.setTitle("Confirmation PopUp!").
+                        setMessage("You sure, that you want to logout?");
+                builder.setPositiveButton("Yes",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                Intent i = new Intent(getApplicationContext(),
+                                        MainActivity.class);
+                                startActivity(i);
+                            }
+                        });
+                builder.setNegativeButton("No",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
+                AlertDialog alert11 = builder.create();
+                alert11.show();
             }
-
         });
 
         attractionContact.setOnClickListener(new View.OnClickListener()
