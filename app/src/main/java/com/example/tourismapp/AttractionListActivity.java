@@ -22,7 +22,7 @@ public class AttractionListActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_attraction_list);
         String fileContents = loadDataFromFile("attractions.json");
         JSONObject attractions = convertToJSON(fileContents);
         parseJSONData(attractions);
