@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.nfc.Tag;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -208,6 +209,30 @@ public class AttractionDetail extends AppCompatActivity {
                 }
             }
 
+        });
+
+        attractionContact.setOnClickListener(new View.OnClickListener()
+
+        {
+            @Override
+            public void onClick(View v) {
+        String phone = attractionContact.getText().toString();
+        Intent phoneIntent = new Intent(Intent.ACTION_DIAL, Uri.fromParts(
+                "tel", phone, null));
+        startActivity(phoneIntent);
+            }
+
+        });
+
+        attractionWebsite.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+
+                Intent Getintent = new Intent(Intent.ACTION_VIEW,Uri.parse(attractionWebsite.getText().toString()));
+                startActivity(Getintent);
+
+            }
         });
 
     }
