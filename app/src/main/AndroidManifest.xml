@@ -11,15 +11,16 @@
         android:theme="@style/Theme.TourismApp">
         <activity android:name=".MainActivity"></activity>
 <!--        <activity android:name=".LoginActivity"></activity>-->
-        <activity android:name=".AttractionDetail"></activity>
-        <activity android:name=".AttractionListActivity"></activity>
-        <activity android:name=".LoginActivity"
+        <activity android:name=".AttractionDetail" android:screenOrientation="portrait"></activity>
+        <activity android:name=".AttractionListActivity" android:screenOrientation="portrait"></activity>
+        <activity android:name=".LoginActivity" android:screenOrientation="portrait"
             >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
     </application>
 
